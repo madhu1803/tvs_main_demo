@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>
+        Static Tables | Klorofil Pro - Bootstrap Admin Dashboard Template
+    </title>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+    <!-- VENDOR CSS -->
+    <link rel="stylesheet" href="/static/vendor/bootstrap/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/static/vendor/font-awesome/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="/static/vendor/themify-icons/css/themify-icons.css" />
+    <link rel="stylesheet" href="/static/vendor/pace/themes/orange/pace-theme-minimal.css" />
+    <!-- MAIN CSS -->
+    <link rel="stylesheet" href="/static/css/main.css" />
+    <link rel="stylesheet" href="/static/css/skins/sidebar-nav-darkgray.css" type="text/css" />
+    <link rel="stylesheet" href="/static/css/skins/navbar3.css" type="text/css" />
+    <!-- ICONS -->
+    <link rel="apple-touch-icon" sizes="76x76" href="/static/img/apple-icon.png" />
+    <link rel="icon" type="image/png" sizes="96x96" href="/static/img/favicon.png" />
+    <style>
+        #submit1,
+        #submit2,
+        #submit3 {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- WRAPPER -->
+    <div id="wrapper">
+
+        <!-- NAVBAR -->
+        {% include 'includes/topnav.html' %}
+        <!-- END NAVBAR -->
+
+        <!-- LEFT SIDEBAR -->
+        {% include 'includes/sidebar.html' %}
+        <!-- END LEFT SIDEBAR -->
+
+        <!-- MAIN -->
+        <div class="main">
+            <!-- MAIN CONTENT -->
+            <div class="main-content">
+
+                <!-- heading start -->
+                <div class="content-heading clearfix">
+                    <div class="heading-left">
+                        <h1 class="page-title">Create View</h1>
+                        <p class="page-subtitle">Simple tables based on Bootstrap.</p>
+                    </div>
+                    <ul class="breadcrumb">
+                        <li>Home</li>
+                        <li id="demo" class="active">Create View</li>
+                    </ul>
+                </div>
+                <!-- heading end -->
+
+                {% include 'main_tables/table1.html' %}
+                {% include 'main_tables/table2.html' %}
+                {% include 'main_tables/table3.html' %}
+
+                <button class="btn btn-primary" id="main_submit">submit</button>
+
+            </div>
+        </div>
+        <!-- END MAIN CONTENT -->
+
+        <!-- RIGHT SIDEBAR -->
+        {% include 'includes/dummy_sidebar.html' %}
+        <!-- END RIGHT SIDEBAR -->
+    </div>
+    <!-- END MAIN -->
+    <div class="clearfix"></div>
+    {% include 'includes/footer.html' %}
+    </div>
+    <!-- END WRAPPER -->
+
+    <!-- Javascript -->
+    <script src="/static/vendor/jquery/jquery.min.js"></script>
+    <script src="/static/vendor/bootstrap/js/bootstrap.min.js"></script>
+    <script src="/static/vendor/pace/pace.min.js"></script>
+    <script src="/static/scripts/klorofilpro-common.js"></script>
+    <!-- ajax scripts -->
+    <script>
+        //time
+        var date = new Date();
+        document.getElementById("demo").innerHTML = date;
+        // checkers for forms
+        var form1_valid = false
+        var form2_valid = false
+        var form3_valid = false
+
+        // on main submit | submit all the forms and invoke the validators
+        $("#main_submit").click(function () {
+            $("#submit1").click()
+            $("#submit2").click()
+            $("#submit3").click()
+        })
+
+        // for each form set the checker and check for submit
+        $("#form1").submit(function (e) {
+            form1_valid = true
+            check_and_send_data()
+            return false;
+        });
+
+        $("#form2").submit(function (e) {
+            form2_valid = true
+            check_and_send_data()
+            return false;
+        });
+
+        $("#form3").submit(function (e) {
+            form3_valid = true
+            check_and_send_data()
+            return false;
+        });
+
+        function check_and_send_data() {
+            if (form1_valid && form2_valid && form3_valid) {
+                // all the forms are filled | send the data
+                send_data()
+            }
+        }
+
+        function send_data() {
+            // func to send data to server
+            var result_form1 = {}
+            var form1 = $("#form1").serializeArray();
+            $.each(form1, function (i, field) {
+                result_form1[field.name] = field.value
+            });
+
+            var result_form2 = {}
+            var form2 = $("#form2").serializeArray();
+            $.each(form2, function (i, field) {
+                result_form2[field.name] = field.value
+            });
+
+            var result_form3 = {}
+            var form3 = $("#form3").serializeArray();
+            $.each(form3, function (i, field) {
+                result_form3[field.name] = field.value
+            });
+
+            let data_to_be_sent = {}
+            data_to_be_sent.form1 = result_form1
+            data_to_be_sent.form2 = result_form2
+            data_to_be_sent.form3 = result_form3
+            $.ajax('/create', {
+                contentType: "application/json",
+                type: 'POST', // http method
+                data: JSON.stringify(data_to_be_sent), // data to submit
+                success: function (data, status, xhr) {
+                    if (data == 'success') {
+                        alert(data)
+                        window.location.reload()
+                    } else
+                        alert("error")
+
+                    form1_valid = false
+                    form2_valid = false
+                    form3_valid = false
+                },
+                error: function (jqXhr, textStatus, errorMessage) {
+                    alert(errorMessage, "error")
+                }
+            });
+        }
+    </script>
+</body>
+
+</html>

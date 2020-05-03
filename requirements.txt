@@ -1,0 +1,5 @@
+flask
+WTForms
+mysql-connector-python
+flask_wtf
+black
